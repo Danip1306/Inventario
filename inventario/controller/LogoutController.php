@@ -1,4 +1,6 @@
 <?php
+// Cerrar la sesión del usuario y redirigir al login.
+
 session_start();
 
 // Destruir todos los datos de sesión
@@ -19,5 +21,5 @@ if (ini_get('session.use_cookies')) {
 
 session_destroy();
 
-header('Location: login.php');
-exit; 
+header('Location: ../controller/LoginController.php');
+exit;

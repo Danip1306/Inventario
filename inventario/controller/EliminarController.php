@@ -1,8 +1,10 @@
 <?php
+// Recibir el GET con el ID, verificar que existe y eliminar el producto
 
 session_start();
-require 'conexion.php';
-require 'auth.php';
+require_once __DIR__ . '/../model/ProductoModel.php';
+require_once __DIR__ . '/../auth.php';
+
 require_role('admin'); // Solo admin puede eliminar
 
 $id = (int)($_GET['id'] ?? 0);
@@ -10,26 +12,21 @@ $id = (int)($_GET['id'] ?? 0);
 if ($id <= 0) {
     $_SESSION['mensaje']  = "ID inválido para eliminar.";
     $_SESSION['tipo_msg'] = 'error';
-    header('Location: index.php');
+    header('Location: IndexController.php');
     exit;
 }
 
 try {
-    $pdo = conectar();
-
-    $stament = $pdo->prepare("SELECT nombre FROM productos WHERE id = ?");
-    $stament->execute([$id]);
-    $producto = $stament->fetch();
+    $producto = buscarProductoPorId($id);
 
     if (!$producto) {
         $_SESSION['mensaje']  = "El producto no fue encontrado.";
         $_SESSION['tipo_msg'] = 'error';
-        header('Location: index.php');
+        header('Location: IndexController.php');
         exit;
     }
 
-    $del = $pdo->prepare("DELETE FROM productos WHERE id = ?");
-    $del->execute([$id]);
+    eliminarProducto($id);
 
     $_SESSION['mensaje']  = "Producto «{$producto['nombre']}» eliminado correctamente.";
     $_SESSION['tipo_msg'] = 'success';
@@ -40,6 +37,5 @@ try {
     $_SESSION['tipo_msg'] = 'error';
 }
 
-header('Location: index.php');
+header('Location: IndexController.php');
 exit;
-?>

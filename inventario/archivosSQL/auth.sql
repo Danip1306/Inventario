@@ -1,4 +1,3 @@
-
 USE inventario_db;
 
 CREATE TABLE IF NOT EXISTS usuarios (
@@ -19,7 +18,7 @@ VALUES (
     'Administrador',
     'admin@inventariopro.com',
     'admin',
-    '$2y$12$FXtT3vJfi6HYOsOQ2NM04OsYzREpRWnY14COraUoi/y...',  -- Admin123!
+    '$2y$10$LICQMe0UuZtysWXBG6dQLeGvTmQoiCj0gUT6PSNwl.o8EfJnqPQzO',  -- Admin123!
     'admin'
 )
 ON DUPLICATE KEY UPDATE id = id;

@@ -1,13 +1,14 @@
 <?php
+//conexión a la base de datos
+
+define('DB_HOST', 'localhost');
+define('DB_PORT', '3307');
+define('DB_NAME', 'inventario_db');
+define('DB_USER', 'root');
+define('DB_PASS', '');
 
 function conectar(): PDO {
-    $host    = "localhost";
-    $port    = "3307"; 
-    $db_name = "inventario_db";
-    $user    = "root";
-    $pass    = "";
-
-    $dsn = "mysql:host=$host;port=$port;dbname=$db_name;charset=utf8mb4";
+    $dsn = "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8mb4";
 
     $opciones = [
         PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
@@ -16,8 +17,7 @@ function conectar(): PDO {
     ];
 
     try {
-        $pdo = new PDO($dsn, $user, $pass, $opciones);
-        return $pdo;
+        return new PDO($dsn, DB_USER, DB_PASS, $opciones);
     } catch (PDOException $e) {
         error_log("Error de conexión: " . $e->getMessage());
         die(json_encode(['error' => 'No se pudo conectar a la base de datos.']));
