@@ -1,6 +1,7 @@
 <?php
 
 require 'conexion.php';
+require 'auth.php'; // Cualquier usuario autenticado 
 
 $pdo = conectar();
 $stament = $pdo->query("SELECT codigo, nombre, categoria, proveedor, precio, stock, stock_minimo, fecha_reg FROM productos ORDER BY nombre");

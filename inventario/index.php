@@ -1,8 +1,10 @@
 <?php
 require 'conexion.php';
+require 'auth.php';   // ← protección de sesión (redirige a login.php si no está autenticado)
 $pdo = conectar();
 
-session_start();
+// session_start() ya lo llama auth.php
+$usuario_sesion = usuario_actual();
 $mensaje = $_SESSION['mensaje'] ?? null;
 $tipo_msg = $_SESSION['tipo_msg'] ?? 'success';
 unset($_SESSION['mensaje'], $_SESSION['tipo_msg']);
@@ -235,7 +237,23 @@ $stats = $pdo->query("
         <span class="navbar-brand fw-bold fs-5 mb-0">
             <i class="bi bi-box-seam me-2"></i>InventarioPro
         </span>
-        <span class="text-white-50 small">Sistema de Gestión de Inventario</span>
+        <div class="d-flex align-items-center gap-2 ms-auto">
+            <span class="text-white-50 small d-none d-md-inline">
+                <i class="bi bi-person-circle me-1"></i>
+                <?= htmlspecialchars($usuario_sesion['nombre']) ?>
+                <span class="badge ms-1" style="background:rgba(255,255,255,0.15);font-size:.7rem;">
+                    <?= ucfirst($usuario_sesion['rol']) ?>
+                </span>
+            </span>
+            <?php if (tiene_rol('admin')): ?>
+            <a href="usuarios.php" class="btn btn-sm btn-outline-light border-0 px-3" title="Gestión de usuarios">
+                <i class="bi bi-people me-1"></i><span class="d-none d-md-inline">Usuarios</span>
+            </a>
+            <?php endif; ?>
+            <a href="logout.php" class="btn btn-sm btn-light text-danger fw-semibold px-3">
+                <i class="bi bi-box-arrow-right me-1"></i><span class="d-none d-sm-inline">Salir</span>
+            </a>
+        </div>
     </div>
 </nav>
 
@@ -252,9 +270,11 @@ $stats = $pdo->query("
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <span class="section-title"><i class="bi bi-table me-1"></i> Lista de Productos</span>
+        <?php if (tiene_rol('editor')): ?>
         <button class="btn btn-morado btn-sm px-3" data-bs-toggle="modal" data-bs-target="#modalAgregar">
             <i class="bi bi-plus-lg me-1"></i> Nuevo Producto
         </button>
+        <?php endif; ?>
     </div>
 
     <!-- FILTROS -->
@@ -282,7 +302,7 @@ $stats = $pdo->query("
                     <label class="form-label small mb-1 fw-semibold text-secondary">Stock</label>
                     <select name="stock" class="form-select form-select-sm">
                         <option value="">Todo</option>
-                        <option value="critico" <?= $filtro_stock === 'critico' ? 'selected' : '' ?>>⚠️ Stock crítico</option>
+                        <option value="critico" <?= $filtro_stock === 'critico' ? 'selected' : '' ?>>Stock crítico</option>
                     </select>
                 </div>
                 <div class="col-md-2 d-flex gap-1">

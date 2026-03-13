@@ -2,6 +2,8 @@
 
 session_start();
 require 'conexion.php';
+require 'auth.php';
+require_role('editor'); // los dos roles pueden editar
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: index.php');

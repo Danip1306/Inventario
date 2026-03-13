@@ -1,6 +1,8 @@
 <?php
 
 session_start();
+require 'auth.php';
+require_role('editor');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: index.php');
